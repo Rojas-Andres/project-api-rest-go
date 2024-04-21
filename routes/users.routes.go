@@ -2,11 +2,11 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/Rojas-Andres/project-api-rest-go/db"
 	"github.com/Rojas-Andres/project-api-rest-go/models"
+	"github.com/gorilla/mux"
 )
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
@@ -18,8 +18,16 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserHandler(w http.ResponseWriter, r *http.Request) {
-
-	w.Write([]byte("Hello World 2"))
+	params := mux.Vars(r)
+	var user models.User
+	db.DB.First(&user, params["id"])
+	if user.ID == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("User not found"))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(&user)
 }
 
 func PostUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,15 +35,12 @@ func PostUserHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 	createdUser := db.DB.Create(&user)
 	err := createdUser.Error
-	fmt.Println("emtre aca")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest) // 400
 		// json.NewEncoder(w).Encode(err)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	fmt.Println("pase aca")
-	// w.Write([]byte("POSTS"))
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(&user)
@@ -44,6 +49,5 @@ func PostUserHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
-
 	w.Write([]byte("Hello World 2"))
 }
