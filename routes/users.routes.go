@@ -10,7 +10,11 @@ import (
 )
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello World 2"))
+	var users []models.User
+	db.DB.Find(&users)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(&users)
+
 }
 
 func GetUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +36,8 @@ func PostUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("pase aca")
 	// w.Write([]byte("POSTS"))
-	w.WriteHeader(http.StatusCreated) 
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(&user)
 	
 }
