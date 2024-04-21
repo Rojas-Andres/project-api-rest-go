@@ -20,6 +20,7 @@ air init
 
 iniciar air
 
+air .
 # Library gorm
 
 go get -u gorm.io/gorm
