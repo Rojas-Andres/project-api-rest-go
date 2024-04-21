@@ -31,3 +31,6 @@ go get -u gorm.io/driver/postgres
 # Docker 
 
 docker-compose up
+
+
+crear migraciones
